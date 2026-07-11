@@ -1,0 +1,32 @@
+{
+  "name": "@authoryxos/claude-code-mcp",
+  "version": "0.1.0",
+  "description": "MCP server that lets Claude Code fetch secrets through AuthoryxOS with intent declarations and human-in-the-loop approval.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "authoryxos-mcp": "dist/server.js"
+  },
+  "files": ["dist", "src", "README.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test --import=tsx test/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "authoryxos": "file:../../packages/sdk-typescript",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

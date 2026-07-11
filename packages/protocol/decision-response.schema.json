@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://authoryxos.dev/schemas/v1/decision-response.json",
+  "title": "DecisionResponse",
+  "$defs": {
+    "effective_policy": {
+      "type": "string",
+      "enum": ["approve_once", "always_approve", "require_approval"]
+    }
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "required": ["status", "token", "secret", "decision_by", "decided_at", "audit_id"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "const": "approved" },
+        "token": { "type": "string", "pattern": "^pending_[A-Za-z0-9_-]+$" },
+        "secret": { "type": "string" },
+        "decision_by": { "type": "string" },
+        "decided_at": { "type": "string", "format": "date-time" },
+        "audit_id": { "type": "string" },
+        "effective_policy": { "$ref": "#/$defs/effective_policy" }
+      }
+    },
+    {
+      "type": "object",
+      "required": ["status", "token", "poll_url", "poll_interval_seconds", "expires_at"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "const": "pending" },
+        "token": { "type": "string", "pattern": "^pending_[A-Za-z0-9_-]+$" },
+        "poll_url": { "type": "string" },
+        "poll_interval_seconds": { "type": "integer", "minimum": 1 },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "effective_policy": { "$ref": "#/$defs/effective_policy" }
+      }
+    },
+    {
+      "type": "object",
+      "required": ["status", "token", "reason", "decided_at", "audit_id"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "const": "denied" },
+        "token": { "type": "string", "pattern": "^pending_[A-Za-z0-9_-]+$" },
+        "reason": { "type": "string" },
+        "decided_at": { "type": "string", "format": "date-time" },
+        "audit_id": { "type": "string" },
+        "effective_policy": { "$ref": "#/$defs/effective_policy" }
+      }
+    }
+  ]
+}

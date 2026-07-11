@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "paths": {
+      "@authoryx/types": ["./packages/types/src/index.ts"],
+      "@authoryx/crypto": ["./packages/crypto/src/index.ts"],
+      "@authoryx/db": ["./packages/db/src/index.ts"],
+      "@authoryx/config": ["./packages/config/src/index.ts"],
+      "@authoryx/sdk": ["./packages/sdk/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}

@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Console · AuthoryxOS{% endblock %}
+{% block content %}
+
+{% if issued_key %}
+<div class="banner">
+  <strong>New API key (copy it now — shown only once):</strong><br />
+  <code>{{ issued_key }}</code>
+</div>
+{% endif %}
+
+<section>
+  <h2>Pending approvals ({{ pending|length }})</h2>
+  <div class="panel">
+    {% if not pending %}
+      <p class="muted">No pending requests.</p>
+    {% else %}
+    <table>
+      <thead><tr><th>Key</th><th>Agent</th><th>Intent</th><th>Policy</th><th>Decide</th></tr></thead>
+      <tbody>
+      {% for r in pending %}
+        <tr>
+          <td><code>{{ r.key_name }}</code></td>
+          <td>{{ r.agent_id }}</td>
+          <td class="intent">{{ r.intent }}</td>
+          <td><span class="pill pending">{{ r.effective_policy }}</span></td>
+          <td>
+            <form class="inline" method="post" action="/dashboard/decide/{{ r.token }}">
+              <input type="hidden" name="decision" value="approve" />
+              <button class="approve" type="submit">Approve</button>
+            </form>
+            <form class="inline" method="post" action="/dashboard/decide/{{ r.token }}">
+              <input type="hidden" name="decision" value="deny" />
+              <button class="deny" type="submit">Deny</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</section>
+
+<section>
+  <h2>Secrets ({{ secrets|length }})</h2>
+  <div class="panel">
+    <table>
+      <thead><tr><th>Name</th><th>Description</th><th>Default policy</th><th>Source</th><th></th></tr></thead>
+      <tbody>
+      {% for s in secrets %}
+        <tr>
+          <td><code>{{ s.key_name }}</code></td>
+          <td class="muted">{{ s.description }}</td>
+          <td>{{ s.default_policy or "—" }}</td>
+          <td class="muted">{{ s.source or "—" }}</td>
+          <td>
+            <form class="inline" method="post" action="/dashboard/secrets/{{ s.key_name }}/delete"
+                  onsubmit="return confirm('Delete {{ s.key_name }}?');">
+              <button class="deny" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <form method="post" action="/dashboard/secrets" style="margin-top: 14px;">
+      <div class="grid">
+        <input name="key_name" placeholder="KEY_NAME" required />
+        <input name="value" placeholder="secret value" required />
+        <input name="description" placeholder="description (optional)" />
+        <select name="default_policy">
+          <option value="">default policy…</option>
+          <option value="approve_once">approve_once</option>
+          <option value="always_approve">always_approve</option>
+          <option value="require_approval">require_approval</option>
+        </select>
+        <button type="submit">Store secret</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section>
+  <h2>Agents ({{ agents|length }})</h2>
+  <div class="panel">
+    {% if not agents %}<p class="muted">No agents registered.</p>{% else %}
+    <table>
+      <thead><tr><th>Name</th><th>External ID</th><th>Allowed keys</th><th>Requires approval</th><th>Default policy</th></tr></thead>
+      <tbody>
+      {% for a in agents %}
+        <tr>
+          <td>{{ a.name }}</td>
+          <td><code>{{ a.external_id or "—" }}</code></td>
+          <td class="muted">{{ a.allowed_keys|join(", ") or "all" }}</td>
+          <td>{{ "yes" if a.require_approval else "no" }}</td>
+          <td>{{ a.default_policy }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</section>
+
+<section>
+  <h2>API keys ({{ api_keys|length }})</h2>
+  <div class="panel">
+    <table>
+      <thead><tr><th>Prefix</th><th>Last 4</th><th>Label</th><th>Scope</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for k in api_keys %}
+        <tr>
+          <td><code>{{ k.prefix }}…</code></td>
+          <td>{{ k.last4 }}</td>
+          <td>{{ k.label or "—" }}</td>
+          <td>{{ k.scope }}</td>
+          <td>{{ "revoked" if k.revoked_at else "active" }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <form method="post" action="/dashboard/api-keys" style="margin-top: 14px;">
+      <div class="grid">
+        <input name="label" placeholder="label (e.g. ci-bot)" />
+        <select name="scope">
+          <option value="agent">agent (fetch only)</option>
+          <option value="admin">admin (manage)</option>
+        </select>
+        <button type="submit">Issue API key</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section>
+  <h2>Recent activity</h2>
+  <div class="panel">
+    {% if not recent %}<p class="muted">No activity yet.</p>{% else %}
+    <table>
+      <thead><tr><th>When</th><th>Key</th><th>Agent</th><th>Decision</th><th>By</th></tr></thead>
+      <tbody>
+      {% for r in recent %}
+        <tr>
+          <td class="muted">{{ to_iso(r.requested_at) }}</td>
+          <td><code>{{ r.key_name }}</code></td>
+          <td>{{ r.agent_id }}</td>
+          <td><span class="pill {{ r.status }}">{{ r.status }}</span></td>
+          <td>{{ r.decision_by or "—" }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

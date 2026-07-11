@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://authoryxos.dev/schemas/v1/intent-request.json",
+  "title": "IntentRequest",
+  "type": "object",
+  "required": ["api_key", "key_name", "intent", "agent_id", "session_id", "nonce", "timestamp"],
+  "additionalProperties": false,
+  "properties": {
+    "api_key": { "type": "string", "pattern": "^axos_live_[A-Za-z0-9]{20,}$" },
+    "key_name": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,127}$" },
+    "intent":   { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "agent_id": { "type": "string", "maxLength": 128 },
+    "session_id": { "type": "string", "maxLength": 128 },
+    "nonce":    { "type": "string", "pattern": "^[0-9a-f]{24}$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "policy_hint": {
+      "type": "string",
+      "enum": ["approve_once", "always_approve", "require_approval"]
+    }
+  }
+}

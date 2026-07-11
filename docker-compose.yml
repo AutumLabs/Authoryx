@@ -1,0 +1,39 @@
+# AuthoryxOS — one-command self-hosted stack.
+#
+#   ./scripts/bootstrap.sh     generate secrets, start, migrate, print admin key
+#   docker compose up -d        start (after .env exists)
+#
+# The backend container runs migrations on start and serves on :8787.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: authoryx
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-authoryx}
+      POSTGRES_DB: authoryx
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authoryx"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./apps/backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      AUTHORYX_ENV: prod
+      AUTHORYX_DATABASE_URL: postgresql+psycopg://authoryx:${POSTGRES_PASSWORD:-authoryx}@postgres:5432/authoryx
+      AUTHORYX_PORT: "8787"
+    ports:
+      - "8787:8787"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

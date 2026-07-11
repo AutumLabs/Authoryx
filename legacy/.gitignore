@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+
+# Environment (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# Turbo cache
+.turbo/
+
+# Test artifacts
+coverage/
+*.lcov
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker volumes (if bind-mounted locally)
+.data/

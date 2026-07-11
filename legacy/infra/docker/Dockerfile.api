@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1.7
+# =============================================================================
+# AuthoryxOS API — Multi-stage Dockerfile
+# =============================================================================
+
+FROM node:20-alpine AS base
+RUN npm install -g pnpm@9
+WORKDIR /app
+
+# ── Install dependencies (cached layer) ───────────────────────────────────────
+FROM base AS deps
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY apps/api/package.json ./apps/api/
+COPY packages/types/package.json ./packages/types/
+COPY packages/db/package.json ./packages/db/
+COPY packages/crypto/package.json ./packages/crypto/
+COPY packages/config/package.json ./packages/config/
+RUN pnpm install --frozen-lockfile
+
+# ── Build ─────────────────────────────────────────────────────────────────────
+FROM deps AS builder
+COPY . .
+RUN pnpm turbo run build --filter=@authoryx/api
+
+# ── Runtime ───────────────────────────────────────────────────────────────────
+FROM node:20-alpine AS runner
+RUN addgroup --system --gid 1001 authoryx && \
+    adduser --system --uid 1001 --ingroup authoryx authoryx
+
+WORKDIR /app
+COPY --from=builder --chown=authoryx:authoryx /app/apps/api/dist ./dist
+COPY --from=builder --chown=authoryx:authoryx /app/node_modules ./node_modules
+
+USER authoryx
+EXPOSE 4000
+CMD ["node", "dist/index.js"]

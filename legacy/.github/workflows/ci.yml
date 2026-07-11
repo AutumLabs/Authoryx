@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    name: Lint · Typecheck · Test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: authoryx
+          POSTGRES_PASSWORD: authoryx
+          POSTGRES_DB: authoryx_os_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: --health-cmd "redis-cli ping" --health-interval 5s
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Run migrations
+        run: pnpm db:migrate
+        env:
+          DATABASE_URL: postgresql://authoryx:authoryx@localhost:5432/authoryx_os_test
+
+      - name: Test
+        run: pnpm test
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://authoryx:authoryx@localhost:5432/authoryx_os_test
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test_jwt_secret_at_least_32_chars_long
+          SESSION_SECRET: test_session_secret_32_chars
+          VAULT_MASTER_KEY: test_vault_key_at_least_32_chars_xx
+          SMS_RELAY_SECRET: test_sms_relay_secret
+          WEBHOOK_SIGNING_SECRET: test_webhook_secret
+
+  docker-build:
+    name: Docker build check
+    runs-on: ubuntu-latest
+    needs: ci
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API image
+        run: docker build -f infra/docker/Dockerfile.api -t authoryx-api:ci .

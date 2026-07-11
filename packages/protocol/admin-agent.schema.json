@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://authoryxos.dev/schemas/v1/admin-agent.json",
+  "title": "AdminAgent",
+  "description": "Body of POST /v1/admin/agents — register an agent and its scope. Requires an admin-scoped API key.",
+  "type": "object",
+  "required": ["name"],
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "description": { "type": "string", "maxLength": 512 },
+    "allowed_keys": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,127}$" },
+      "description": "Key names this agent may fetch. Empty array = all keys in the tenant."
+    },
+    "require_approval": { "type": "boolean", "default": true },
+    "default_policy": {
+      "type": "string",
+      "enum": ["approve_once", "always_approve", "require_approval"],
+      "default": "require_approval"
+    }
+  }
+}

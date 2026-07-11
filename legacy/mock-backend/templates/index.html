@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AuthoryxOS Mock Backend</title>
+  <style>
+    body { font-family: -apple-system, system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+    h1 { margin-bottom: 0.2rem; }
+    .muted { color: #777; font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid #eee; vertical-align: top; }
+    th { background: #fafafa; }
+    form.inline { display: inline; }
+    button { padding: 0.3rem 0.7rem; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; }
+    button.approve { border-color: #1f9d55; color: #1f9d55; }
+    button.deny    { border-color: #c53030; color: #c53030; }
+    .intent { max-width: 380px; }
+    .pill { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.75rem; }
+    .pill.approved { background: #e6fffa; color: #1f9d55; }
+    .pill.denied   { background: #fff5f5; color: #c53030; }
+    .pill.expired  { background: #f1f5f9; color: #475569; }
+  </style>
+</head>
+<body>
+  <h1>AuthoryxOS Mock Backend</h1>
+  <div class="muted">
+    Auto-approve mode: <strong>{{ "ON" if auto else "OFF" }}</strong>
+    &middot; Local reference implementation. Not for production.
+  </div>
+
+  <h2>Pending requests</h2>
+  {% if pending %}
+  <table>
+    <tr>
+      <th>Key</th><th>Intent</th><th>Agent</th><th>Requested</th><th>Action</th>
+    </tr>
+    {% for p in pending %}
+    <tr>
+      <td><code>{{ p.key_name }}</code></td>
+      <td class="intent">{{ p.intent }}</td>
+      <td><code>{{ p.agent_id }}</code></td>
+      <td class="muted">{{ p.requested_at }}</td>
+      <td>
+        <form class="inline" method="post" action="/ui/decide/{{ p.token }}">
+          <input type="hidden" name="decision" value="approve">
+          <button class="approve" type="submit">Approve</button>
+        </form>
+        <form class="inline" method="post" action="/ui/decide/{{ p.token }}">
+          <input type="hidden" name="decision" value="deny">
+          <button class="deny" type="submit">Deny</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="muted">No pending requests.</p>
+  {% endif %}
+
+  <h2>Recent decisions</h2>
+  {% if recent %}
+  <table>
+    <tr><th>Key</th><th>Intent</th><th>Status</th><th>Decided</th></tr>
+    {% for r in recent %}
+    <tr>
+      <td><code>{{ r.key_name }}</code></td>
+      <td class="intent">{{ r.intent }}</td>
+      <td><span class="pill {{ r.status }}">{{ r.status }}</span></td>
+      <td class="muted">{{ r.decided_at or "" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="muted">No decisions yet.</p>
+  {% endif %}
+</body>
+</html>

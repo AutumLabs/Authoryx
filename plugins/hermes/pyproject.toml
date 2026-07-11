@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "authoryxos-hermes"
+version = "0.1.0"
+description = "Hermes Agent plugin that delegates secret access to AuthoryxOS."
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "AutumLabs" }]
+dependencies = [
+  "authoryxos",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.23"]
+
+# Hermes Agent does not (as of writing) load plugins via entry points —
+# it discovers tools by AST-scanning its own tools/ directory. We expose
+# an entry point anyway for any wrapper / loader that supports it, and a
+# `register()` function the user can call explicitly.
+[project.entry-points."hermes.toolsets"]
+authoryxos = "authoryxos_hermes:register"
+
+[tool.setuptools.packages.find]
+include = ["authoryxos_hermes*"]

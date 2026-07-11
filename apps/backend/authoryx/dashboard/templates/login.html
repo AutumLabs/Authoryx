@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Sign in · AuthoryxOS{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+<section class="panel" style="max-width: 360px; margin: 60px auto;">
+  <h2>Owner sign-in</h2>
+  {% if error %}<p style="color: var(--red);">{{ error }}</p>{% endif %}
+  <form method="post" action="/dashboard/login">
+    <p><input type="password" name="password" placeholder="Owner password" autofocus
+              style="width: 100%;" /></p>
+    <p><input type="submit" value="Sign in" /></p>
+  </form>
+</section>
+{% endblock %}

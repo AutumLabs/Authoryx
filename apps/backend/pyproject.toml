@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "authoryx-backend"
+version = "0.1.0"
+description = "Production, self-hostable AuthoryxOS backend — multi-tenant, encrypted-at-rest, policy-gated secret access for agentic AI."
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.27",
+  "jinja2>=3.1",
+  "python-multipart>=0.0.9",
+  "python-dotenv>=1.0",
+  "pydantic>=2.5",
+  "pydantic-settings>=2.1",
+  "SQLAlchemy>=2.0",
+  "alembic>=1.13",
+  "cryptography>=42.0",
+  "httpx>=0.27",
+  "itsdangerous>=2.1",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.1"]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "psycopg[binary]>=3.1"]
+
+[project.scripts]
+authoryx-backend = "authoryx.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["authoryx*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

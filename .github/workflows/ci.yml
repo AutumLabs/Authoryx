@@ -1,0 +1,91 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install SDK
+        run: |
+          pip install -e packages/sdk-python[dev]
+
+      - name: Install mock backend
+        run: |
+          pip install -e apps/mock-backend[dev]
+
+      - name: SDK tests
+        run: pytest packages/sdk-python/tests -q
+
+      - name: Mock backend tests
+        run: pytest apps/mock-backend/tests -q
+
+      - name: Install CLI
+        run: pip install -e apps/cli[dev]
+
+      - name: CLI tests
+        run: pytest apps/cli/tests -q
+
+      - name: Install Hermes plugin
+        run: pip install -e plugins/hermes[dev]
+
+      - name: Hermes plugin tests
+        run: pytest plugins/hermes/tests -q
+
+  typescript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: SDK install + build + test
+        working-directory: packages/sdk-typescript
+        run: |
+          npm ci || npm install
+          npx tsc -p tsconfig.json --noEmit
+          npx tsc -p tsconfig.json
+          node --test --import=tsx test/*.test.ts
+
+      - name: OpenClaw plugin install + test
+        working-directory: plugins/openclaw
+        run: |
+          npm install
+          npx tsc -p tsconfig.json --noEmit
+          node --test --import=tsx test/*.test.ts
+
+      - name: Claude Code MCP plugin install + test
+        working-directory: plugins/claude-code
+        run: |
+          npm install
+          npx tsc -p tsconfig.json --noEmit
+          node --test --import=tsx test/*.test.ts
+
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install jsonschema
+      - name: Validate schemas parse
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          for p in pathlib.Path("packages/protocol").glob("*.schema.json"):
+              json.loads(p.read_text())
+              print("ok:", p)
+          PY

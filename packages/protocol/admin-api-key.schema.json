@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://authoryxos.dev/schemas/v1/admin-api-key.json",
+  "title": "AdminApiKey",
+  "description": "Response of POST /v1/admin/api-keys. The plaintext `api_key` is returned exactly once at issuance; only metadata is retrievable afterward.",
+  "type": "object",
+  "required": ["id", "prefix", "scope", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string" },
+    "api_key": {
+      "type": "string",
+      "pattern": "^axos_live_[A-Za-z0-9]{20,}$",
+      "description": "Returned only in the issuance response, never again."
+    },
+    "prefix": { "type": "string", "description": "e.g. 'axos_live_ab12'." },
+    "last4": { "type": "string" },
+    "label": { "type": "string", "maxLength": 128 },
+    "scope": {
+      "type": "string",
+      "enum": ["agent", "admin"],
+      "description": "'agent' = fetch only; 'admin' = manage keys/agents/api-keys."
+    },
+    "allowed_keys": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,127}$" }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "revoked_at": { "type": "string", "format": "date-time" }
+  }
+}

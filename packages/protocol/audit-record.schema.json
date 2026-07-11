@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://authoryxos.dev/schemas/v1/audit-record.json",
+  "title": "AuditRecord",
+  "type": "object",
+  "required": [
+    "audit_id", "agent_id", "session_id", "key_name", "intent",
+    "decision", "requested_at", "nonce"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "audit_id":     { "type": "string" },
+    "agent_id":     { "type": "string" },
+    "session_id":   { "type": "string" },
+    "key_name":     { "type": "string" },
+    "intent":       { "type": "string" },
+    "decision":     { "type": "string", "enum": ["approved", "denied", "pending", "expired"] },
+    "decided_by":   { "type": "string" },
+    "requested_at": { "type": "string", "format": "date-time" },
+    "decided_at":   { "type": "string", "format": "date-time" },
+    "ip_address":   { "type": "string" },
+    "nonce":        { "type": "string" }
+  }
+}

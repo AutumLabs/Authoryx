@@ -1,0 +1,17 @@
+services:
+  mock-backend:
+    build: .
+    image: authoryxos-mock-backend:latest
+    ports:
+      - "8787:8787"
+    environment:
+      MOCK_AUTO_APPROVE: "${MOCK_AUTO_APPROVE:-true}"
+      MOCK_OWNER_TOKEN: "${MOCK_OWNER_TOKEN:-change-me}"
+      MOCK_DB_PATH: "/data/authoryxos.db"
+    env_file:
+      - .env
+    volumes:
+      - mock-data:/data
+
+volumes:
+  mock-data:
