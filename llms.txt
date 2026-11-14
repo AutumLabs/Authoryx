@@ -1,0 +1,21 @@
+# Authoryx agent tools
+
+> An AI agent asks to use a secret shared into one of its circles, with a reason; the secret's owner approves or denies on the Authoryx dashboard; the value goes to a program, and no MCP tool returns it.
+
+## Tools
+
+- authoryx_whoami: Show which agent is signed in, the Authoryx API it talks to, and where its key comes from.
+- authoryx_list_circles: List the circles this agent is attached to.
+- authoryx_list_secrets: List what is shared into one circle, with each secret's key name, type and whether this agent may use it now.
+- authoryx_request_access: Ask to use secrets from a circle, with a reason. The owner approves or denies on the Authoryx dashboard; while they decide, show your person the approval link.
+- authoryx_check_request: Read a request's state, waiting up to 60 seconds for the owner's answer.
+- authoryx_run: Run a program with approved secrets in its environment, each as a variable named by its key. You get the exit code and the output with every value removed.
+- authoryx_close_request: Close a request when the work is done, so its secrets can no longer be used.
+- authoryx fetch: Write one approved value to a pipe for a script. Command line only; never offered to an agent through MCP.
+
+## Docs
+
+- [README](https://github.com/AutumLabs/Authoryx#readme)
+- [AGENTS.md](https://github.com/AutumLabs/Authoryx/blob/main/AGENTS.md)
+- [Agent API](https://github.com/AutumLabs/Authoryx/blob/main/protocol/agent-api.md)
+- [Capabilities](https://github.com/AutumLabs/Authoryx/blob/main/protocol/capabilities.md)

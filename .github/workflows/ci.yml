@@ -36,6 +36,28 @@ jobs:
       - run: npm test
       - run: npm run check
 
+  acceptance:
+    name: acceptance run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:acceptance
+
+  quickstart:
+    name: quickstart in a clean container
+    runs-on: ubuntu-latest
+    container: node:22-bookworm
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci && npm run build
+      - run: bash test/quickstart/run.sh
+
   audit:
     name: npm audit
     runs-on: ubuntu-latest

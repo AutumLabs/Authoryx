@@ -1,0 +1,40 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.AutumLabs/authoryx",
+  "title": "Authoryx",
+  "description": "Ask to use a secret shared with your agent; its owner approves; no tool returns the value.",
+  "repository": {
+    "url": "https://github.com/AutumLabs/Authoryx",
+    "source": "github",
+    "subfolder": "packages/mcp"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@authoryx/mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "AUTHORYX_AGENT_ID",
+          "description": "The agent's id, agt_\u2026; leave unset to use authoryx login",
+          "isRequired": false
+        },
+        {
+          "name": "AUTHORYX_AGENT_KEY",
+          "description": "The agent's key, axa_\u2026; leave unset to use the OS keychain",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "AUTHORYX_API_URL",
+          "description": "The Authoryx API's address",
+          "isRequired": false
+        }
+      ]
+    }
+  ]
+}
