@@ -4,7 +4,9 @@
   "description": "The Authoryx command-line tool for agents: sign in, ask to use a secret, wait for the owner's answer, run a program with it.",
   "license": "Apache-2.0",
   "type": "module",
-  "bin": { "authoryx": "dist/main.js" },
+  "bin": {
+    "authoryx": "dist/main.js"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -13,7 +15,11 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "hooks", "README.md"],
+  "files": [
+    "dist",
+    "hooks",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -23,9 +29,23 @@
     "@authoryx/core": "0.1.0",
     "@authoryx/sdk": "0.1.0"
   },
-  "engines": { "node": ">=20" },
-  "repository": { "type": "git", "url": "git+https://github.com/AutumLabs/Authoryx.git", "directory": "packages/cli" },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutumLabs/Authoryx.git",
+    "directory": "packages/cli"
+  },
   "homepage": "https://github.com/AutumLabs/Authoryx#readme",
-  "keywords": ["authoryx", "agents", "secrets", "cli"],
-  "publishConfig": { "access": "public", "provenance": true }
+  "keywords": [
+    "authoryx",
+    "agents",
+    "secrets",
+    "cli"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

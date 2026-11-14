@@ -12,16 +12,33 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --import tsx --test test/*.test.ts"
   },
-  "engines": { "node": ">=20" },
-  "repository": { "type": "git", "url": "git+https://github.com/AutumLabs/Authoryx.git", "directory": "packages/sdk" },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutumLabs/Authoryx.git",
+    "directory": "packages/sdk"
+  },
   "homepage": "https://github.com/AutumLabs/Authoryx#readme",
-  "keywords": ["authoryx", "agents", "secrets", "sdk"],
-  "publishConfig": { "access": "public", "provenance": true }
+  "keywords": [
+    "authoryx",
+    "agents",
+    "secrets",
+    "sdk"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

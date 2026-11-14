@@ -5,7 +5,9 @@
   "license": "Apache-2.0",
   "type": "module",
   "mcpName": "io.github.AutumLabs/authoryx",
-  "bin": { "authoryx-mcp": "dist/main.js" },
+  "bin": {
+    "authoryx-mcp": "dist/main.js"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -14,7 +16,11 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "server.json", "README.md"],
+  "files": [
+    "dist",
+    "server.json",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -24,9 +30,24 @@
     "@authoryx/core": "0.1.0",
     "@modelcontextprotocol/sdk": "^1.32.2"
   },
-  "engines": { "node": ">=20" },
-  "repository": { "type": "git", "url": "git+https://github.com/AutumLabs/Authoryx.git", "directory": "packages/mcp" },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutumLabs/Authoryx.git",
+    "directory": "packages/mcp"
+  },
   "homepage": "https://github.com/AutumLabs/Authoryx#readme",
-  "keywords": ["authoryx", "mcp", "agents", "secrets", "claude-code"],
-  "publishConfig": { "access": "public", "provenance": true }
+  "keywords": [
+    "authoryx",
+    "mcp",
+    "agents",
+    "secrets",
+    "claude-code"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }
