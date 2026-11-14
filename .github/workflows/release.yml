@@ -1,0 +1,83 @@
+name: Release
+
+# release-please keeps a release pull request open on main. Merging it tags the
+# release, and this workflow then publishes every npm package and the Python
+# SDK at that one version, with provenance. Run it by hand for a dry run.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Build and pack everything, publish nothing
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      released: ${{ steps.rp.outputs.release_created }}
+      tag: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - id: rp
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  npm:
+    needs: release-please
+    if: ${{ always() && (needs.release-please.outputs.released == 'true' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'release-dry-run' || 'npm' }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: npm run test:acceptance
+      - name: Publish (sdk, core, cli, mcp, in dependency order)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '--dry-run' || '' }}
+        run: |
+          for w in @authoryx/sdk @authoryx/core authoryx @authoryx/mcp; do
+            npm publish -w "$w" --access public --provenance $DRY
+          done
+
+  pypi:
+    needs: release-please
+    if: ${{ always() && (needs.release-please.outputs.released == 'true' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'release-dry-run' || 'pypi' }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install build
+      - run: python -m build python/authoryx-sdk
+      - if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: python/authoryx-sdk/dist

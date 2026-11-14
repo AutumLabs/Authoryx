@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "include-component-in-tag": false,
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "package-name": "authoryx",
+      "release-as": "0.1.0",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        { "type": "json", "path": "packages/sdk/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/core/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/core/package.json", "jsonpath": "$.dependencies['@authoryx/sdk']" },
+        { "type": "json", "path": "packages/cli/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/cli/package.json", "jsonpath": "$.dependencies['@authoryx/core']" },
+        { "type": "json", "path": "packages/cli/package.json", "jsonpath": "$.dependencies['@authoryx/sdk']" },
+        { "type": "json", "path": "packages/mcp/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/mcp/package.json", "jsonpath": "$.dependencies['@authoryx/core']" },
+        { "type": "json", "path": "packages/mcp/server.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "packages/mcp/server.json", "jsonpath": "$.packages[0].version" },
+        { "type": "generic", "path": "packages/sdk/src/version.ts" },
+        { "type": "generic", "path": "packages/core/src/version.ts" },
+        { "type": "generic", "path": "python/authoryx-sdk/pyproject.toml" },
+        { "type": "generic", "path": "python/authoryx-sdk/authoryx/_version.py" }
+      ]
+    }
+  }
+}

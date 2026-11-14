@@ -58,6 +58,25 @@ jobs:
       - run: npm ci && npm run build
       - run: bash test/quickstart/run.sh
 
+  python:
+    name: python sdk (${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e "python/authoryx-sdk[test]"
+      - run: pytest -q python/authoryx-sdk
+
   audit:
     name: npm audit
     runs-on: ubuntu-latest
