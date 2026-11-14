@@ -17,7 +17,7 @@ packages/sdk/          @authoryx/sdk: the typed client; no runtime dependency
 packages/core/         @authoryx/core: tool registry, verbs, run and redaction, sign-in
 packages/cli/          authoryx: the command-line tool and the Claude Code guard hook
 packages/mcp/          @authoryx/mcp: the MCP stdio server
-python/authoryx-sdk/   authoryx on PyPI (being built)
+python/authoryx-sdk/   authoryx on PyPI: the Python client; standard library only
 skills/, plugins/      the agent skill and host packages (a later feature)
 connectors/            T2 connectors (later; empty until a T2 feature)
 test/fake-agent-api/   an in-memory stand-in for the agent API, used by every test
@@ -38,6 +38,7 @@ npm run test:acceptance          # after build: nothing planted reaches what an 
 bash test/quickstart/run.sh      # after build: the README's steps from packed packages
 npm run docs        # regenerate the tool table, docs/tools.md, capabilities.md, llms.txt
 npm run check       # wording, lengths, and that generated text is current
+pip install -e "python/authoryx-sdk[test]" && pytest -q python/authoryx-sdk   # Python 3.10+
 ```
 
 No server, account or key is needed to develop: the stand-in API issues its own per test.
@@ -73,6 +74,8 @@ No server, account or key is needed to develop: the stand-in API issues its own 
 ## Commits and pull requests
 
 - Work lands through pull requests to `main`; CI must pass on macOS, Linux and Windows.
-- Subjects say what changed in the imperative, with the roadmap feature id when there is one
-  (`F-014: add the MCP server`). No tool or assistant attribution lines in commits or PRs.
-- Releases are cut by release-please from `main`; one version for every package.
+- Squash subjects are Conventional Commits with the roadmap feature id as the scope, so
+  release-please can read them: `feat(F-014): add the MCP server`, `fix(F-014): …`.
+  No tool or assistant attribution lines in commits or PRs.
+- Releases: release-please keeps a release PR open on `main`; merging it tags one version for every
+  package, and `.github/workflows/release.yml` publishes to npm and PyPI with provenance.

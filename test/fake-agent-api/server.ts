@@ -69,6 +69,11 @@ export interface FakeApiOptions {
   /** Approve every new request at once, as if the owner were waiting. */
   autoApprove?: boolean;
   dashboardUrl?: string;
+  /**
+   * Serve POST /_control/<action> with a JSON body, so tests in another
+   * language can play the owner and the platform. Never on in the packages.
+   */
+  controlRoutes?: boolean;
 }
 
 export interface FakeApi {
@@ -348,6 +353,26 @@ export async function startFakeApi(opts: FakeApiOptions = {}): Promise<FakeApi> 
     let raw = "";
     for await (const chunk of req) raw += chunk;
     const url = new URL(req.url ?? "/", "http://x");
+    if (opts.controlRoutes && url.pathname.startsWith("/_control/")) {
+      const b = (raw ? JSON.parse(raw) : {}) as { id?: string; keyNames?: string[]; value?: unknown; count?: number; reset?: number };
+      const action = url.pathname.slice("/_control/".length);
+      const act: Record<string, () => unknown> = {
+        approve: () => approve(b.id as string, b.keyNames),
+        deny: () => control.deny(b.id as string, b.keyNames),
+        expire: () => control.expire(b.id as string),
+        expireUse: () => control.expireUse(b.id as string),
+        autoApprove: () => control.setAutoApprove(!!b.value),
+        off: () => control.setOff(!!b.value),
+        apiVersion: () => control.setApiVersion(Number(b.value)),
+        rateLimit: () => control.rateLimit(b.count ?? 1, b.reset ?? 1),
+        lastRequestId: () => lastId,
+        circles: () => circles,
+      };
+      const fn = act[action];
+      res.writeHead(fn ? 200 : 404, { "content-type": "application/json" });
+      res.end(JSON.stringify(fn ? { ok: true, result: fn() ?? null } : { ok: false }));
+      return;
+    }
     const prefix = "/agent/v1/os";
     const path = url.pathname.startsWith(prefix) ? url.pathname.slice(prefix.length) || "/" : null;
     const method = req.method ?? "GET";
@@ -393,7 +418,7 @@ export async function startFakeApi(opts: FakeApiOptions = {}): Promise<FakeApi> 
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   const port = (server.address() as AddressInfo).port;
 
-  return {
+  const control: FakeApi = {
     url: `http://127.0.0.1:${port}`,
     agentId,
     agentKey,
@@ -435,4 +460,5 @@ export async function startFakeApi(opts: FakeApiOptions = {}): Promise<FakeApi> 
         server.close(() => resolve());
       }),
   };
+  return control;
 }
