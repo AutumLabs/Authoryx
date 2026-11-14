@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/AutumLabs/Authoryx/blob/main/protocol/schemas/error-envelope.schema.json",
+  "title": "ErrorEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "success",
+    "data"
+  ],
+  "properties": {
+    "success": {
+      "const": false
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "error",
+        "code"
+      ],
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "enum": [
+            "AGENT_INVALID",
+            "AGENT_UNAUTHORIZED",
+            "AGENT_NOT_APPROVED",
+            "AGENT_NOT_FOUND",
+            "AGENT_PENDING_LIMIT",
+            "RATE_LIMIT_EXCEEDED",
+            "AGENT_API_OFF",
+            "AGENT_UNAVAILABLE"
+          ]
+        },
+        "state": {
+          "enum": [
+            "pending",
+            "denied",
+            "expired",
+            "closed"
+          ]
+        },
+        "field": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

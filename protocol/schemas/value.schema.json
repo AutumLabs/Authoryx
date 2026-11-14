@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/AutumLabs/Authoryx/blob/main/protocol/schemas/value.schema.json",
+  "title": "Value",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "keyName",
+        "type",
+        "username",
+        "password",
+        "url",
+        "version"
+      ],
+      "properties": {
+        "keyName": {
+          "type": "string"
+        },
+        "type": {
+          "const": "login"
+        },
+        "username": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "password": {
+          "type": "string"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "version": {
+          "type": "integer"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "keyName",
+        "type",
+        "value",
+        "version"
+      ],
+      "properties": {
+        "keyName": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "api_key",
+            "note"
+          ]
+        },
+        "value": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "keyName",
+        "type",
+        "code",
+        "expiresAt",
+        "version"
+      ],
+      "properties": {
+        "keyName": {
+          "type": "string"
+        },
+        "type": {
+          "const": "totp"
+        },
+        "code": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "version": {
+          "type": "integer"
+        }
+      }
+    }
+  ]
+}

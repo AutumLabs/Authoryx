@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/AutumLabs/Authoryx/blob/main/protocol/schemas/share.schema.json",
+  "title": "Share",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "keyName",
+    "name",
+    "type",
+    "description",
+    "vault",
+    "access"
+  ],
+  "properties": {
+    "keyName": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "login",
+        "api_key",
+        "totp",
+        "note"
+      ]
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "vault": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "shared-vault.schema.json"
+        }
+      ]
+    },
+    "access": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "const": "ask"
+            },
+            "pendingRequestId": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "until",
+            "requestId"
+          ],
+          "properties": {
+            "state": {
+              "const": "allowed"
+            },
+            "until": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requestId": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "const": "blocked"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

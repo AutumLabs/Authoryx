@@ -1,0 +1,29 @@
+{
+  "name": "@authoryx/workspace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Agent tools for Authoryx: an agent asks for a secret, the secret's owner decides, and the value goes to a program, not to the conversation.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "workspaces": [
+    "packages/sdk",
+    "test/fake-agent-api"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present && tsc -p tsconfig.test.json",
+    "test": "npm run test --workspaces --if-present",
+    "check": "node scripts/check-docs.mjs",
+    "ci": "npm run build && npm run typecheck && npm test && npm run check"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "ajv": "^8.17.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "ajv-formats": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

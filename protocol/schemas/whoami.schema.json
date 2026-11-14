@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/AutumLabs/Authoryx/blob/main/protocol/schemas/whoami.schema.json",
+  "title": "WhoAmI",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "agent",
+    "apiVersion"
+  ],
+  "properties": {
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "hostKind"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^agt_[a-z2-7]{26}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "hostKind": {
+          "type": "string"
+        }
+      }
+    },
+    "apiVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

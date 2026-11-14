@@ -1,0 +1,12 @@
+{
+  "name": "@authoryx/fake-agent-api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "An in-memory stand-in for the Authoryx agent API, for tests.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./server.ts",
+    "./schemas": "./schemas.ts"
+  }
+}
