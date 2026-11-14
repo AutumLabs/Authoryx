@@ -1,0 +1,32 @@
+{
+  "name": "@authoryx/core",
+  "version": "0.1.0",
+  "description": "The shared core of the Authoryx agent tools: the tool registry, the verbs, run with output redaction, and sign-in.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@authoryx/sdk": "0.1.0"
+  },
+  "optionalDependencies": {
+    "@napi-rs/keyring": "^2.1.2"
+  },
+  "engines": { "node": ">=20" },
+  "repository": { "type": "git", "url": "git+https://github.com/AutumLabs/Authoryx.git", "directory": "packages/core" },
+  "homepage": "https://github.com/AutumLabs/Authoryx#readme",
+  "keywords": ["authoryx", "agents", "secrets"],
+  "publishConfig": { "access": "public", "provenance": true }
+}

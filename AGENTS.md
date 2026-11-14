@@ -14,14 +14,17 @@ the tools speak the agent API in [protocol/agent-api.md](protocol/agent-api.md) 
 ```text
 protocol/              the agent API contract, JSON Schemas, capabilities, VERSION
 packages/sdk/          @authoryx/sdk: the typed client; no runtime dependency
-packages/core/         @authoryx/core: tool registry, verbs, run and redaction, sign-in (being built)
-packages/cli/          authoryx: the command-line tool and the Claude Code guard hook (being built)
-packages/mcp/          @authoryx/mcp: the MCP stdio server (being built)
+packages/core/         @authoryx/core: tool registry, verbs, run and redaction, sign-in
+packages/cli/          authoryx: the command-line tool and the Claude Code guard hook
+packages/mcp/          @authoryx/mcp: the MCP stdio server
 python/authoryx-sdk/   authoryx on PyPI (being built)
 skills/, plugins/      the agent skill and host packages (a later feature)
 connectors/            T2 connectors (later; empty until a T2 feature)
 test/fake-agent-api/   an in-memory stand-in for the agent API, used by every test
-scripts/               repository checks
+test/acceptance/       the built server and CLI as processes, every output searched for planted values
+test/quickstart/       the README's steps from packed packages in an empty directory
+docs/                  concepts, tiers, security, troubleshooting; tools.md is generated
+scripts/               gen-docs.mjs (generated text) and check-docs.mjs (wording and length)
 ```
 
 ## Commands
@@ -31,7 +34,10 @@ npm ci              # Node 20 or newer; npm workspaces only
 npm run build       # every package
 npm run typecheck
 npm test            # unit tests, all against test/fake-agent-api
-npm run check       # README and AGENTS.md length and order, forbidden claims
+npm run test:acceptance          # after build: nothing planted reaches what an agent sees
+bash test/quickstart/run.sh      # after build: the README's steps from packed packages
+npm run docs        # regenerate the tool table, docs/tools.md, capabilities.md, llms.txt
+npm run check       # wording, lengths, and that generated text is current
 ```
 
 No server, account or key is needed to develop: the stand-in API issues its own per test.

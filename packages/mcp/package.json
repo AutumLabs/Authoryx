@@ -1,0 +1,32 @@
+{
+  "name": "@authoryx/mcp",
+  "version": "0.1.0",
+  "description": "The Authoryx MCP server: an agent lists its circles and secrets, asks to use them, and runs programs with approved secrets. No tool returns a value.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "mcpName": "io.github.AutumLabs/authoryx",
+  "bin": { "authoryx-mcp": "dist/main.js" },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "server.json", "README.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@authoryx/core": "0.1.0",
+    "@modelcontextprotocol/sdk": "^1.32.2"
+  },
+  "engines": { "node": ">=20" },
+  "repository": { "type": "git", "url": "git+https://github.com/AutumLabs/Authoryx.git", "directory": "packages/mcp" },
+  "homepage": "https://github.com/AutumLabs/Authoryx#readme",
+  "keywords": ["authoryx", "mcp", "agents", "secrets", "claude-code"],
+  "publishConfig": { "access": "public", "provenance": true }
+}
